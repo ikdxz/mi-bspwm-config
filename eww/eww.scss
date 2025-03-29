@@ -1,0 +1,184 @@
+* {
+  all: unset;
+  font-family: DejaVu;
+}
+
+
+.barra{
+  background-color: #424f4d;
+
+}
+
+.app-launcher{
+  margin-left: -20px;
+}
+
+
+.app {
+  font-size: 32px;
+  color: #cbf5dc;
+  margin-left: 45px;
+}
+
+.appdos {
+  font-size: 25px;
+  color: #cbf5dc;
+  margin-right: 15px;
+}
+
+.appdos:hover{
+  color: #71827f;
+  transition: 0.1s ease;
+}
+
+.revealer_off{
+  margin-right: 25px;
+}
+
+.sys{
+  color: #7fb092;
+}
+
+
+.app:hover{
+  color: #2d403d;
+  transition: 0.1s ease;
+}
+
+
+.workspaces{
+  font-size: 16px;
+  padding: 5px 20px;
+  border-radius: 20px;
+  background-color: rgba(106, 122, 120, 0.5);
+} 
+
+.w1.focused, .w2.focused, .w3.focused, .w4.focused, .w5.focused, .w6.focused, .w7.focused, .w8.focused, .w9.focused {
+  color: #cbf5dc;
+}
+
+.w1, .w2, .w3, .w4, .w5, .w6, .w7, .w8, .w9 {
+  color: #7fb092;
+}
+
+
+.w1:not(.focused),
+.w2:not(.focused),
+.w3:not(.focused),
+.w4:not(.focused),
+.w5:not(.focused),
+.w6:not(.focused),
+.w7:not(.focused),
+.w8:not(.focused),
+.w9:not(.focused),{
+  font-weight: 800;
+}
+
+.w1:hover,
+.w2:hover,
+.w3:hover,
+.w4:hover,
+.w5:hover,
+.w6:hover,
+.w7:hover,
+.w8:hover,
+.w9:hover{
+  color: grey;
+  transition: 0.2s ease;
+}
+
+.w1:not(.focused):hover,
+.w2:not(.focused):hover,
+.w3:not(.focused):hover,
+.w4:not(.focused):hover,
+.w5:not(.focused):hover,
+.w6:not(.focused):hover,
+.w7:not(.focused):hover,
+.w8:not(.focused):hover,
+.w9:not(.focused):hover{
+  color: grey; 
+  transition: 0.2s ease;
+}
+
+.btn_recursos{
+  font-size: 11px;
+  color: white;
+  padding: 10px;
+  margin-right: 3px;
+}
+
+
+.cir_progreso {
+  color: #cbf5dc;
+  background-color: #38384d;
+  padding: 25px;
+}
+
+
+.dia-semana, .hora, .mes{
+  color: #cbf5dc;
+}
+
+
+.dia-semana {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+
+.mes{
+  font-size: 18px;
+  font-weight: 900;
+}
+
+
+.hora{
+  /*margin-right: 20px;*/
+  font-weight: 700;
+  font-size: 18px;
+}
+
+
+.revealer-on-hover {
+  transition: all 0.3s ease-in-out;
+}
+
+
+.icono {
+  font-size: 16px;
+  color: #cbf5dc;
+  margin-right: 22px;
+}
+
+
+scale trough {
+  background-color: rgba(50, 50, 50, 0.7);
+  border-radius: 10px;
+  min-height: 10px;
+  min-width: 80px;
+  margin-right: 10px;
+}
+
+scale trough highlight {
+  background-color: #cbf5dc;
+  border-radius: 10px;
+}
+
+.separ{
+  margin: 0 10px;
+  color: #7fb092;
+  font-weight: 700;
+}
+
+
+.powermenu {
+  margin-right: 30px;
+  font-size: 21px;
+  color: #cbf5dc; 
+
+}
+
+
+.button-lock {
+  margin-right: 28px;
+}

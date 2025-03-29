@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Define los workspaces (ajusta según tus necesidades)
+workspaces=(1 2 3 4 5 6 7 8 9)
+
+update_workspaces() {
+    # Obtiene el workspace actualmente enfocado
+    focused_ws=$(bspc query -D --names --desktop focused)
+
+    # Comienza a construir el marcado para eww (contenedor box)
+    markup="(box :class \"works\" :orientation \"h\" :valign \"center\" :spacing 30 :space-evenly \"false\""
+
+    # Recorre cada workspace para determinar su estado y asignar icono/clase
+    for ws in "${workspaces[@]}"; do
+        if [ "$ws" = "$focused_ws" ]; then
+            state="focused"
+        else
+            # Consulta si el workspace tiene ventanas (nodos)
+            nodes=$(bspc query -N -d "$ws")
+            if [ -n "$nodes" ]; then
+                state="occupied"
+            else
+                state="unoccupied"
+            fi
+        fi
+
+        # Define el icono según el estado: 
+        # Si está enfocado u ocupado muestra "", sino ""
+        if [ "$state" = "unoccupied" ]; then
+            icon=""
+        else
+            icon=""
+        fi
+
+        # Agrega el botón para este workspace al marcado
+        markup+=" (button :onclick \"bspc desktop -f $ws\" :class \"w$ws $state\" \"$icon\")"
+    done
+
+    markup+=")"
+    echo "$markup"
+}
+
+# Muestra inicialmente el marcado generado
+update_workspaces
+
+# Actualiza la barra cada vez que haya un cambio (por ejemplo, al mover o abrir ventanas)
+bspc subscribe desktop node_transfer | while read -r _ ; do
+    update_workspaces
+done
+

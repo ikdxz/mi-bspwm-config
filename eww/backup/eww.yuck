@@ -1,0 +1,240 @@
+;;def
+
+(defpoll clock_day :interval "5m" "date '+%a'| sed 's/\\.$//'")
+(defpoll clock_month :interval "5m" "date '+%b' | sed 's/\\.$//'")
+(defpoll clock_time :interval "5m" "date +%H")
+(defpoll clock_minute :interval "5s" "date +\%M")
+(defpoll clock_date :interval "10h" "date '+%d'")
+(defpoll brillo :interval "1s" "scripts/brillo")
+(defpoll ram :interval "15s" "scripts/ram")
+(defpoll cpu :interval "1s" "scripts/cpu")
+(defpoll red :interval "30s" "scripts/red")
+(defpoll volumen :interval "0.1s" "scripts/volumen")
+(defvar show_vol false)
+(defvar show_bri false)
+(defvar eww "eww -c $HOME/.config/eww")
+(deflisten workspace "scripts/workspace")
+(defvar reveal1 false)
+(defvar reveal2 false)
+
+
+
+
+;;Widgets
+
+
+;;izquierda
+
+
+(defwidget izquierda []
+  (box :orientation "h"
+    :space-evenly true
+    :halign "start"
+    :spacing "0px"
+    :class "center_modules"
+    (launcher)))
+
+
+(defwidget launcher []
+  (box :class "app-launcher" :orientation "h" :spacing "0" :halign "center"
+    (button :class "app sys" :onclick "nohup rofi -show drun >/dev/null 2>&1 & disown" :tooltip "Rofi" "󰣇")
+   ;; (sep)
+    (button :class "app" :onclick "nautilus &" :tooltip "Ficheros" "")
+    (button :class "app" :onclick "google-chrome-stable --new-window --force-new-profile 'https://github.com/Saimoomedits/eww-widgets'" :tooltip "Chrome" "")
+    (button :class "app" :onclick "onlyoffice-desktopeditors &" :tooltip "Office" "󰏆")
+    (button :class "app" :onclick "code &" :tooltip "Visual Studio Code" "󰨞")
+    (button :class "app" :onclick "spotify &" :tooltip "Spotify" "")
+))
+
+
+;;centro
+
+
+(defwidget workspaces []
+  (literal :content workspace))
+
+
+(defwidget centro []
+  (box :orientation "h"
+     :space-evenly false
+     :halign "center"
+     :valign "center"
+     :class "workspaces"
+     (workspaces)))
+
+;;derecha
+
+; Revealer on hover, using children
+(defwidget revealer-on-hover [var varname ?class ?duration ?transition]
+  (box :class "${class} revealer-on-hover" 
+       :orientation "h"
+       :space-evenly false
+    (eventbox :class "eventbox"
+              :onhover "${eww} update ${varname}=true"
+              :onhoverlost "${eww} update ${varname}=false"
+      (box :space-evenly false
+        (revealer :reveal var
+                  :transition {transition ?: "slideright"}
+                  :duration {duration ?: "350ms"}
+          (children :nth 0))
+        (children :nth 1)))))
+
+(defwidget hover-module-volumen [vara varname icon ?class]
+  (box :space-evenly false
+       :class "hover-module ${class}" 
+    (revealer-on-hover :var vara
+                       :varname "${varname}"
+                       :transition "slideleft"
+      (box :orientation "h" :space-evenly false
+        (scale :value volumen :max 100 :min 0 
+               :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%")) ; Ajustar volumen
+      (label :class "icono"
+             :text icon))))
+
+(defwidget hover-module-brillo [vara varname icon ?class]
+  (box :space-evenly false
+       :class "hover-module ${class}"
+    (revealer-on-hover :var vara
+                       :varname "${varname}"
+                       :transition "slideleft"
+      (box :orientation "h" :space-evenly false
+        (scale :value brillo :max 100 :min 0 
+               :onchange "xrandr --output DP-4 --gamma 1.05:0.95:0.85 --brightness $(echo \"{} / 100\" | bc -l)"))
+      (label :class "icono"
+             :text icon))))
+
+
+
+
+
+
+(defwidget wifi []
+  (box :class "icono" 
+    (label :text "" :tooltip red))
+)
+
+(defwidget cpu []
+    (box :class "hola" :vexpand "false" :hexpand "false"
+            (circular-progress :class "cir_progreso" :value cpu :thickness 5
+            (button 
+                :class "btn_recursos"
+                :limit-width 2
+                :tooltip "Uso de CPU: ${cpu}%"
+                :onclick "$HOME/.config/eww/bar/scripts/pop system"
+                ""))))
+
+
+(defwidget ram []
+		(box :class "mem_module" :vexpand "false" :hexpand "false" 
+            (circular-progress :value ram
+                :class "cir_progreso"
+                :thickness 5
+            (button 
+                :class "btn_recursos"
+                :limit-width 2
+                :tooltip "Uso de RAM: ${ram}%"
+                :onclick "$HOME/.config/eww/bar/scripts/pop system"
+                ""))))
+
+(defwidget sep []
+  (box :class "module-2" :vexpand "false" :hexpand "false"
+    (label :class "separ" :text "|")))
+
+
+(defwidget calendario_hora []
+  (box :class "reloj"
+       :space-evenly "false" :orientation "h" :spacing "20" 
+    (box :orientation "v" :hexpand "start" :valign "center" :spacing "-5"
+        (box :orientation "h" :class "dia-semana" :valign "center" 
+          (button  :halign "start" :onclick "notify-send '¡Notificación!' 'FUCk.' &"  "${clock_day}")
+          (button :halign "end" :onclick "notify-send '¡Notificación!' 'Se ha hecho clic en el calendario.' &"  "${clock_date}"))
+          (box :class "mes" :halign "start"
+            (button :onclick "notify-send '¡Notificación!' 'Se ha hecho clic en el calendario.' &" "${clock_month}")))
+    (box :class "hora" :orientation "v" :spacing "-12"
+      (button :onclick "notify-send '¡Notificación!' 'Se ha hecho clic en el calendario.' &" "${clock_time}")
+      (button :onclick "notify-send '¡Notificación!' 'Se ha hecho clic en el calendario.' &"  "${clock_minute}"))))
+
+
+
+(defwidget power []
+	(eventbox	:onhover "${eww} update power=true"	
+				:onhoverlost "${eww} update power=false" 
+	(box		:orientation "h"					
+				:space-evenly "false" 	 
+				:vexpand "false" 	
+				:class "powermenu"
+	(revealer	:transition "slideleft"				
+				:reveal power			 
+				:duration "350ms"
+	(box	:orientation "h"					
+				:space-evenly "false"
+        :spacing "28"
+        :class "botones"
+
+	(button   	:class "button-bspres"  			
+				:tooltip "BSPWM Restart" 
+				:onclick "bspc wm -r" "" )
+
+  	(button		:class "button-reb"					
+	  			:tooltip "Reboot"		 
+				:onclick "reboot"	"")
+
+	(button		:class "button-quit" 				
+				:tooltip "Logout" 		 
+				:onclick "killall bspwm" "")
+
+	(button		:class "button-lock" 				
+				:tooltip "Lock Screen"	 
+				:onclick "betterlockscreen -l"	"")))
+
+	(button		:class "button-off"					
+				:tooltip "Shutdown"		 
+				:onclick "shutdown now"	""))))
+(defvar power false)
+
+
+
+(defwidget derecha []
+  (box :class "derbox"
+       :orientation "h"
+       :halign "end"
+       :spacing "0"
+  
+  (box :class "bar"
+       :space-evenly false
+       :halign "end"
+       :spacing 20
+    (hover-module-volumen :vara reveal1 :varname "reveal1" :icon "")
+    (hover-module-brillo :vara reveal2 :varname "reveal2" :icon "")
+  (wifi)
+  (sep)
+  (cpu)
+  (ram)
+  (sep)
+  (calendario_hora)
+  (sep)
+  (power)
+    )))
+
+(defwidget barratop []
+  (box :class "barra"
+       :orientation "h"
+  (izquierda)
+  (centro)
+  (derecha)))
+
+;;Ventanas
+
+(defwindow barra :hexpand false :vexpand false 
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "55px"
+                      :anchor "top center")
+  :stacking "fg"
+  :reserve (struts :distance "70px" :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+  (barratop)
+)
+
